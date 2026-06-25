@@ -1,0 +1,205 @@
+# ============================================================
+#  BlogSphere — .gitignore
+#  Covers: Node.js · TypeScript · Flutter/Dart · PostgreSQL
+# ============================================================
+
+
+# ────────────────────────────────────────────────────────────
+#  ENVIRONMENT & SECRETS
+# ────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+config/local.*
+
+
+# ────────────────────────────────────────────────────────────
+#  NODE.JS / NPM / YARN / PNPM
+# ────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+package-lock.json.bak
+
+
+# ────────────────────────────────────────────────────────────
+#  TYPESCRIPT
+# ────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+*.tsbuildinfo
+*.js.map
+
+
+# ────────────────────────────────────────────────────────────
+#  LOGS
+# ────────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+combined.log
+error.log
+
+
+# ────────────────────────────────────────────────────────────
+#  RUNTIME / TEMP
+# ────────────────────────────────────────────────────────────
+tmp/
+temp/
+.cache/
+.tmp/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+
+# ────────────────────────────────────────────────────────────
+#  FLUTTER / DART
+# ────────────────────────────────────────────────────────────
+# Generated files
+*.dart_tool/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# Build outputs
+**/android/.gradle/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+**/*.keystore
+**/*.jks
+
+**/ios/.symlinks/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Pods/
+**/ios/Runner.xcworkspace/xcuserdata/
+**/*.xcworkspace/xcuserdata/
+
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/ephemeral/
+
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
+
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/generated_plugins.cmake
+
+**/web/flutter_service_worker.js
+
+# Dart / pub cache
+pubspec.lock
+.pub-cache/
+.pub/
+build/
+
+
+# ────────────────────────────────────────────────────────────
+#  DATABASE / POSTGRESQL
+# ────────────────────────────────────────────────────────────
+*.sql.bak
+*.dump
+*.db
+*.sqlite
+*.sqlite3
+migrations/rollback/
+db/data/
+
+
+# ────────────────────────────────────────────────────────────
+#  TESTING & COVERAGE
+# ────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+junit.xml
+
+
+# ────────────────────────────────────────────────────────────
+#  EDITORS & IDEs
+# ────────────────────────────────────────────────────────────
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (IntelliJ, Android Studio)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+
+
+# ────────────────────────────────────────────────────────────
+#  OPERATING SYSTEM
+# ────────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+# ────────────────────────────────────────────────────────────
+#  DOCKER
+# ────────────────────────────────────────────────────────────
+docker-compose.override.yml
+.dockerignore.local
+
+
+# ────────────────────────────────────────────────────────────
+#  MISCELLANEOUS
+# ────────────────────────────────────────────────────────────
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+uploads/
+assets/uploads/
