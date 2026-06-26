@@ -1,0 +1,43 @@
+=========================================
+      POSTMAN CURL COMMANDS
+=========================================
+
+1. Register User (POST)
+-----------------------------------------
+curl --location 'http://localhost:3000/api/auth/register' \
+--form 'full_name="John Doe"' \
+--form 'phone_no="+1234567890"' \
+--form 'email="john@example.com"' \
+--form 'password="secretpassword"' \
+--form 'profile_photo=@"/path/to/your/image.jpg"'
+
+* Note: Replace "/path/to/your/image.jpg" with the actual path to an image file on your local machine.
+
+-----------------------------------------
+2. Login User (POST)
+-----------------------------------------
+curl --location 'http://localhost:3000/api/auth/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "john@example.com",
+    "password": "secretpassword"
+}'
+
+-----------------------------------------
+3. Get Profile (GET)
+-----------------------------------------
+curl --location 'http://localhost:3000/api/auth/profile' \
+--header 'Authorization: Bearer YOUR_JWT_TOKEN_HERE'
+
+* Note: Replace YOUR_JWT_TOKEN_HERE with the token received from the Login API response.
+
+-----------------------------------------
+4. Update Profile (PUT)
+-----------------------------------------
+curl --location --request PUT 'http://localhost:3000/api/auth/profile' \
+--header 'Authorization: Bearer YOUR_JWT_TOKEN_HERE' \
+--form 'full_name="John Doe Updated"' \
+--form 'phone_no="+0987654321"' \
+--form 'profile_photo=@"/path/to/another/image.png"'
+
+* Note: All fields are optional here. Replace the Bearer token and file path accordingly.
