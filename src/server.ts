@@ -165,10 +165,22 @@ async function start(): Promise<void> {
   console.log('');
 
   // 1. Verify DB connection
-  await sequelize.authenticate();
+  try {
+    await sequelize.authenticate();
+    console.log('Database connected successfully.');
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    process.exit(1);
+  }
 
   // 2. Run migrations (idempotent — safe to run on every boot)
-  await sequelize.sync({ alter: true });
+  try {
+    await sequelize.sync({ alter: true });
+    console.log('Database synchronized successfully.');
+  } catch (error) {
+    console.error('Database synchronization failed:', error);
+    process.exit(1);
+  }
 
   // 3. Build and start Fastify
   const app = await buildApp();
