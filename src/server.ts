@@ -6,12 +6,14 @@ import fastifyRateLimit from '@fastify/rate-limit';
 import fastifyMultipart from '@fastify/multipart';
 import config from './config';
 import sequelize from './config/database';
+import path from 'path';
+import { testCloudinaryConnection } from './utils/upload';
 
 // ─── Plugins ─────────────────────────────────────────────────────────────────
 // import authPlugin from './plugins/auth.plugin';
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
-// import authRoutes from './routes/auth/auth.routes';
+import authRoutes from './routes/auth.routes';
 // import userRoutes from './routes/users/user.routes';
 // import postRoutes from './routes/posts/post.routes';
 // import commentRoutes from './routes/posts/comment.routes';
@@ -109,7 +111,7 @@ async function buildApp(): Promise<FastifyInstance> {
   // Route registration  (all under /api)
   // ─────────────────────────────────────────────────────────────────────────
 
-  // await app.register(authRoutes, { prefix: '/api/auth' });
+  await app.register(authRoutes, { prefix: '/api/auth' });
   // await app.register(userRoutes, { prefix: '/api/users' });
   // await app.register(postRoutes, { prefix: '/api/posts' });
   // await app.register(commentRoutes, { prefix: '/api/posts' }); // /:postId/comments
@@ -165,12 +167,27 @@ async function start(): Promise<void> {
   console.log('');
 
   // 1. Verify DB connection
-  await sequelize.authenticate();
+  try {
+    await sequelize.authenticate();
+    console.log('Database connected successfully.');
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    process.exit(1);
+  }
 
   // 2. Run migrations (idempotent — safe to run on every boot)
-  await sequelize.sync({ alter: true });
+  try {
+    await sequelize.sync({ alter: true });
+    console.log('Database synchronized successfully.');
+  } catch (error) {
+    console.error('Database synchronization failed:', error);
+    process.exit(1);
+  }
 
-  // 3. Build and start Fastify
+  // 3. Verify Cloudinary connection
+  await testCloudinaryConnection();
+
+  // 4. Build and start Fastify
   const app = await buildApp();
 
   try {
