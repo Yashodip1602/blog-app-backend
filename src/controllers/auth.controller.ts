@@ -29,7 +29,10 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
       return reply.status(statusCode).send(responseBody);
     }
 
-    const token = await reply.jwtSign({ id: result.data.id });
+    const token = await reply.jwtSign({ 
+      id: result.data.id,
+      role: result.role
+    });
 
     return reply.status(result.statusCode).send({
       success: result.success,
@@ -48,13 +51,16 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
     const body = req.body as any;
 
     const result = await loginUser(body);
-    
+
     if (!result.success) {
-       const { statusCode, ...responseBody } = result;
-       return reply.status(statusCode).send(responseBody);
+      const { statusCode, ...responseBody } = result;
+      return reply.status(statusCode).send(responseBody);
     }
 
-    const token = await reply.jwtSign({ id: result.user.id });
+    const token = await reply.jwtSign({ 
+      id: result.user.id,
+      role: result.role
+    });
 
     return reply.status(result.statusCode).send({
       success: result.success,
@@ -71,7 +77,7 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
 export const getProfile = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { id } = req.user as { id: string };
-    
+
     const result = await getUserProfile(id);
 
     const { statusCode, ...responseBody } = result;
@@ -85,7 +91,7 @@ export const getProfile = async (req: FastifyRequest, reply: FastifyReply) => {
 export const updateProfile = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { id } = req.user as { id: string };
-    
+
     const parts = req.parts();
     let profile_photo_url: string | null = null;
     const body: any = {};
