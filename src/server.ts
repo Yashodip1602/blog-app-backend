@@ -8,6 +8,7 @@ import config from './config';
 import sequelize from './config/database';
 import path from 'path';
 import { testCloudinaryConnection } from './utils/upload';
+import { seedRoles } from './service/role-seed.service';
 
 // ─── Plugins ─────────────────────────────────────────────────────────────────
 // import authPlugin from './plugins/auth.plugin';
@@ -106,6 +107,14 @@ async function buildApp(): Promise<FastifyInstance> {
       health: `/health`,
     });
   });
+
+// ── Seed Roles ──────────────────────────────────────────────────────────
+  try {
+    await seedRoles();
+    app.log.info('Roles seeded successfully');
+  } catch (error) {
+    app.log.error(error);
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Route registration  (all under /api)

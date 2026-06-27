@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import User from '../models/user.model';
+import Role from '../models/role.model';
 import { hashPassword, comparePassword } from '../utils/hashPassword';
 
 export interface ServiceResponse {
@@ -9,6 +10,7 @@ export interface ServiceResponse {
   data?: any;
   token?: string;
   error?: string;
+  role?: string;
 }
 
 export const registerUser = async (data: any): Promise<ServiceResponse> => {
@@ -28,12 +30,21 @@ export const registerUser = async (data: any): Promise<ServiceResponse> => {
     return { statusCode: 400, success: false, message: 'Email or Phone Number already exists' };
   }
 
+  const totalUser = await User.count();
+  const roleCode = totalUser === 0 ? 'super_admin' : 'viewer';
+  const role = await Role.findOne({ where: { code: roleCode } });
+  const roleId = role ? role.id : undefined;
+  if (!roleId) {
+    return { statusCode: 400, success: false, message: 'Default role not found. Please seed roles first.' };
+  }
+
   const hashedPassword = await hashPassword(password);
 
   const newUser = await User.create({
     full_name,
     phone_no,
     email,
+    role_id: roleId,
     password: hashedPassword,
     profile_photo_url,
   });
@@ -43,6 +54,7 @@ export const registerUser = async (data: any): Promise<ServiceResponse> => {
     success: true,
     message: 'User registered successfully',
     data: newUser,
+    role: role?.role,
   };
 };
 
@@ -63,11 +75,14 @@ export const loginUser = async (data: any): Promise<Omit<ServiceResponse, 'token
     return { statusCode: 401, success: false, message: 'Invalid credentials' };
   }
 
+  const role = await Role.findByPk(user.role_id);
+
   return {
     statusCode: 200,
     success: true,
     message: 'Login successful',
     user: user,
+    role: role?.role,
   };
 };
 

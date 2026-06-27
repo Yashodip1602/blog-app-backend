@@ -8,6 +8,7 @@ export interface UserAttributes {
   phone_no: string;
   email: string;
   password?: string;
+  role_id: string;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -21,6 +22,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public phone_no!: string;
   public email!: string;
   public password!: string;
+  public role_id!: string;
 
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -64,6 +66,14 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'roles',
+        key: 'id',
+      },
     },
   },
   {
