@@ -7,7 +7,7 @@ import fastifyMultipart from '@fastify/multipart';
 import config from './config';
 import sequelize from './config/database';
 import path from 'path';
-import { testCloudinaryConnection } from './utils/upload';
+import { testUploadConnection } from './utils/upload';
 import { seedRoles } from './service/role-seed.service';
 
 // ─── Plugins ─────────────────────────────────────────────────────────────────
@@ -193,8 +193,8 @@ async function start(): Promise<void> {
     process.exit(1);
   }
 
-  // 3. Verify Cloudinary connection
-  await testCloudinaryConnection();
+  // 3. Verify upload provider connection
+  await testUploadConnection();
 
   // 4. Build and start Fastify
   const app = await buildApp();

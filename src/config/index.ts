@@ -36,6 +36,13 @@ const config = {
     dir: process.env.UPLOAD_DIR || 'uploads',
     maxFileSizeMB: parseInt(process.env.MAX_FILE_SIZE_MB || '5', 10),
   },
+
+  aws: {
+    region: process.env.AWS_REGION || 'us-east-1',
+    bucketName: process.env.AWS_BUCKET_NAME || '',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+  },
 } as const;
 
 export default config;
