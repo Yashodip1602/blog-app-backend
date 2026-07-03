@@ -1,10 +1,10 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-dotenv.config({ quiet: true });
+dotenv.config();
 
 const sequelize = new Sequelize({
-  dialect: 'postgres',
+  dialect: "postgres",
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USER,
@@ -25,12 +25,15 @@ const sequelize = new Sequelize({
     idle: 10000,
   },
 
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions:
+    process.env.DB_SSL === "true"
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
 });
 
 export default sequelize;
