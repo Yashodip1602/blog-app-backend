@@ -1,18 +1,22 @@
 pipeline {
   agent any
 
-  parameters {
-    string(name: 'AWS_ACCOUNT_ID', defaultValue: '', description: 'AWS account ID for ECR and ECS deployments')
-    string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS region for ECR and ECS')
-    string(name: 'ECR_REPOSITORY', defaultValue: 'app-b-backlog', description: 'Amazon ECR repository name')
-    string(name: 'ECS_CLUSTER', defaultValue: 'blogsphere-cluster', description: 'Amazon ECS cluster name')
-    string(name: 'ECS_SERVICE', defaultValue: 'blogsphere-backend', description: 'Amazon ECS service name')
-    string(name: 'IMAGE_NAME', defaultValue: 'app-b-backlog', description: 'Docker image name')
-    string(name: 'SONAR_PROJECT_KEY', defaultValue: 'App-B-BackLog', description: 'SonarQube project key')
-    string(name: 'SONAR_PROJECT_NAME', defaultValue: 'App-B-BackLog', description: 'SonarQube project name')
-    string(name: 'GIT_REPO_URL', defaultValue: 'git@github.com:your-org/your-repo.git', description: 'GitHub SSH repository URL')
-    string(name: 'GIT_BRANCH', defaultValue: 'development', description: 'Branch to build and deploy')
-  }
+ parameters {
+    string(name: 'AWS_ACCOUNT_ID', defaultValue: '450730497369', description: 'AWS account ID')
+    string(name: 'AWS_REGION', defaultValue: 'ap-south-1', description: 'AWS region')
+
+    string(name: 'ECR_REPOSITORY', defaultValue: 'blog-app/blog-app-reop', description: 'ECR Repository')
+
+    string(name: 'ECS_CLUSTER', defaultValue: 'default', description: 'ECS Cluster')
+
+    string(name: 'ECS_SERVICE', defaultValue: 'blog-app-reop-de5c', description: 'ECS Service')
+
+    string(name: 'IMAGE_NAME', defaultValue: 'app-b-backlog', description: 'Docker Image')
+
+    string(name: 'GIT_REPO_URL', defaultValue: 'git@github.com:Yashodip1602/blog-app-backend.git', description: 'GitHub Repo')
+
+    string(name: 'GIT_BRANCH', defaultValue: 'development', description: 'Git Branch')
+}
 
   options {
     timestamps()
