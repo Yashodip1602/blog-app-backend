@@ -13,6 +13,9 @@ pipeline {
 
     string(name: 'IMAGE_NAME', defaultValue: 'app-b-backlog', description: 'Docker Image')
 
+    string(name: 'SONAR_PROJECT_KEY', defaultValue: 'blog-app-dev', description: 'SonarQube project key')
+    string(name: 'SONAR_PROJECT_NAME', defaultValue: 'blog-app-dev', description: 'SonarQube project name')
+
     string(name: 'GIT_REPO_URL', defaultValue: 'git@github.com:Yashodip1602/blog-app-backend.git', description: 'GitHub Repo')
 
     string(name: 'GIT_BRANCH', defaultValue: 'development', description: 'Git Branch')
