@@ -15,6 +15,7 @@ import { seedRoles } from './service/role-seed.service';
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 import authRoutes from './routes/auth.routes';
+import uploadRoutes from './routes/upload.routes';
 // import userRoutes from './routes/users/user.routes';
 // import postRoutes from './routes/posts/post.routes';
 // import commentRoutes from './routes/posts/comment.routes';
@@ -121,6 +122,7 @@ async function buildApp(): Promise<FastifyInstance> {
   // ─────────────────────────────────────────────────────────────────────────
 
   await app.register(authRoutes, { prefix: '/api/auth' });
+  await app.register(uploadRoutes, { prefix: '/api/uploads' });
   // await app.register(userRoutes, { prefix: '/api/users' });
   // await app.register(postRoutes, { prefix: '/api/posts' });
   // await app.register(commentRoutes, { prefix: '/api/posts' }); // /:postId/comments

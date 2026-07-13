@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { uploadFile } from '../utils/upload';
+import { uploadFile, updateFile } from '../utils/upload';
 import { registerUser, loginUser, getUserProfile, updateUserProfile } from '../service/auth.service';
+import User from '../models/user.model';
 
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -11,9 +12,9 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
     for await (const part of parts) {
       if (part.type === 'file') {
         if (part.fieldname === 'profile_photo' && part.filename) {
-          profile_photo_url = await uploadFile(part);
+          profile_photo_url = await uploadFile(part, { folder: 'profiles' });
         } else {
-          part.file.resume(); // discard other files
+          part.file.resume();
         }
       } else {
         body[part.fieldname] = part.value;
@@ -29,9 +30,9 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
       return reply.status(statusCode).send(responseBody);
     }
 
-    const token = await reply.jwtSign({ 
+    const token = await reply.jwtSign({
       id: result.data.id,
-      role: result.role
+      role: result.role,
     });
 
     return reply.status(result.statusCode).send({
@@ -57,9 +58,9 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
       return reply.status(statusCode).send(responseBody);
     }
 
-    const token = await reply.jwtSign({ 
+    const token = await reply.jwtSign({
       id: result.user.id,
-      role: result.role
+      role: result.role,
     });
 
     return reply.status(result.statusCode).send({
@@ -91,6 +92,8 @@ export const getProfile = async (req: FastifyRequest, reply: FastifyReply) => {
 export const updateProfile = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { id } = req.user as { id: string };
+    const currentUser = await User.findByPk(id);
+    const existingPhotoKey = currentUser?.profile_photo_url || null;
 
     const parts = req.parts();
     let profile_photo_url: string | null = null;
@@ -99,7 +102,9 @@ export const updateProfile = async (req: FastifyRequest, reply: FastifyReply) =>
     for await (const part of parts) {
       if (part.type === 'file') {
         if (part.fieldname === 'profile_photo' && part.filename) {
-          profile_photo_url = await uploadFile(part);
+          profile_photo_url = existingPhotoKey
+            ? await updateFile(existingPhotoKey, part, { folder: 'profiles' })
+            : await uploadFile(part, { folder: 'profiles' });
         } else {
           part.file.resume();
         }
