@@ -1,115 +1,120 @@
-# BlogSphere API Backend
+# App-B-BackLog — Backend API
 
-A robust RESTful API backend for the BlogSphere application, built with Node.js, Fastify, TypeScript, PostgreSQL, and Sequelize. It provides secure authentication, profile management, and a foundation for scalable blog application features.
+A professional, production-ready RESTful API backend for App-B-BackLog. It provides user authentication, role-based access control, file uploads, and a foundation for building a scalable blog management application.
 
-## 🚀 Tech Stack
+**Tech stack**
+- Node.js + TypeScript
+- Fastify (HTTP framework)
+- PostgreSQL (relational database)
+- Sequelize (ORM)
+- JWT for authentication
 
-- **Framework**: [Fastify](https://www.fastify.io/) - Fast and low overhead web framework for Node.js
-- **Language**: [TypeScript](https://www.typescriptlang.org/) - Strongly typed programming language
-- **Database**: [PostgreSQL](https://www.postgresql.org/) - Powerful, open-source object-relational database
-- **ORM**: [Sequelize](https://sequelize.org/) - Promise-based Node.js ORM for Postgres
-- **Authentication**: JWT (JSON Web Tokens) via `@fastify/jwt`
-- **File Uploads**: `multipart/form-data` via `@fastify/multipart`
+**Primary features**
+- User registration and login (email/password)
+- JWT-based authentication and protected routes
+- Role management (admin, user, etc.) and a role seeder (`src/service/role-seed.service.ts`)
+- Profile photo uploads and static file serving
 
-## 🛠️ Prerequisites
+**Repository layout (key files)**
+- `src/server.ts` — application entry point
+- `src/config/` — database and environment configuration
+- `src/controllers/` — route handlers
+- `src/routes/` — route definitions (including `auth` routes)
+- `src/middleware/` — auth middleware and request hooks
+- `src/models/` — Sequelize models (`user`, `role`, associations)
+- `src/service/` — business logic (authentication, seeding)
 
-Before you begin, ensure you have the following installed on your machine:
-- Node.js (v18 or higher recommended)
-- PostgreSQL (v14 or higher recommended)
-- npm or yarn
-
-## 📦 Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone <your-repository-url>
-   cd App-B-BackLog
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Set up Environment Variables:**
-   Create a `.env` file in the root directory based on the following template:
-   ```env
-   # Server Configuration
-   PORT=3000
-   NODE_ENV=development
-
-   # Database Configuration
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_USER=postgres
-   DB_PASSWORD=your_password
-   DB_NAME=blogsphere
-
-   # JWT Configuration
-   JWT_SECRET=your_super_secret_jwt_key_here
-
-   # Cloudinary Configuration
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
-   ```
-
-4. **Create Database:**
-   Ensure your PostgreSQL server is running and create a database named `blogsphere` (or whatever you set in your `.env` file).
-
-## 🏃‍♂️ Running the Application
-
-- **Development Mode** (with hot-reload):
-  ```bash
-  npm run dev
-  ```
-- **Production Build & Run**:
-  ```bash
-  npm run build
-  npm start
-  ```
-
-*The server will automatically sync the database models on startup.*
-
-## 📁 Folder Structure
-
-```text
-src/
-├── config/             # Environment and Database configuration
-├── controllers/        # Request handlers for API routes
-├── middleware/         # Custom Fastify hooks (e.g., JWT auth)
-├── models/             # Sequelize database models
-├── routes/             # Fastify route definitions
-├── utils/              # Helper functions (hashing, file uploads)
-└── server.ts           # Application entry point and setup
+**Quick start**
+1. Clone the repository and install dependencies:
+```bash
+git clone https://github.com/Yashodip1602/blog-app-backend.git
+cd App-B-BackLog
+npm install
+```
+2. Create a `.env` file in the project root (see Environment variables below).
+3. Start the development server:
+```bash
+npm run dev
 ```
 
-## 🔌 API Endpoints
+**Environment variables**
+Create a `.env` file in the project root and set the following keys. Adjust values to your environment.
 
-### 1. Authentication & Profile
+```env
+# Server
+PORT=3000
+NODE_ENV=development/production
 
-Base path: `/api/auth`
+# Database (PostgreSQL)
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_db_password
+DB_NAME=app_b_backlog
 
-| Method | Endpoint | Description | Requires Auth? |
-|--------|----------|-------------|----------------|
-| POST   | `/register` | Register a new user (supports `profile_photo` upload) | No |
-| POST   | `/login` | Login user with email and password | No |
-| GET    | `/profile` | Get the logged-in user's profile data | Yes |
-| PUT    | `/profile` | Update the logged-in user's profile data/photo | Yes |
+# JWT
+JWT_SECRET=your_jwt_secret_here
+JWT_EXPIRES_IN=7d
 
-#### Postman Testing Notes
-- **Register/Update Profile**: Use `form-data` in Postman to pass files (for `profile_photo`) alongside text fields (`full_name`, `email`, `phone_no`, `password`).
-- **Login/Profile**: Pass the generated `token` in the `Authorization` header as a `Bearer` token for protected routes.
-- **Static Files**: Uploaded images are served statically via `http://localhost:<PORT>/uploads/<filename>`.
+# File uploads / storage
+UPLOAD_DIR=uploads
 
-## 🤝 Contributing
+# Production (connection database or s3)
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+# AWS RDS
+DB_HOST=
+DB_PORT=5432
+DB_USERNAME=
+DB_PASSWORD=
+DB_DB_NAME=
+DB_SSL=true
 
-## 📄 License
+# AWS (S3 + credentials)
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=us-east-1
+S3_BUCKET_NAME=
 
-This project is licensed under the ISC License.
+
+# Cloudinary (file uploads for development)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+Notes:
+- `JWT_SECRET` must be a long, unpredictable string. Keep it secret.
+- `DB_*` values should match your PostgreSQL configuration.
+
+**Running seeders**
+To create default roles (admin/user) run the role seeder implemented in `src/service/role-seed.service.ts` (adapt to your project scripts or run the seeder script you have configured).
+
+**Available scripts**
+- `npm run dev` — start in development mode (hot reload)
+- `npm run build` — compile TypeScript for production
+- `npm start` — run the compiled production build
+
+**API overview**
+- Base auth routes are mounted under `/api/auth` (see `src/routes/auth.routes.ts`). Typical endpoints:
+  - `POST /api/auth/register` — register a new user (multipart for profile photo)
+  - `POST /api/auth/login` — login and receive JWT
+  - `GET /api/auth/profile` — get current user's profile (protected)
+  - `PUT /api/auth/profile` — update profile (protected)
+
+When testing protected endpoints, send the JWT in the `Authorization` header as: `Authorization: Bearer <token>`.
+
+**Development tips**
+- Keep a local `.env` (do not commit it).
+- Use Postman or similar to test multipart file uploads (use `form-data` for files).
+- Check `src/utils/hashPassword.ts` for password hashing strategy and `src/middleware/jwt.ts` for token handling.
+
+**Contributing**
+1. Fork the repository
+2. Create a feature branch
+3. Open a pull request with a clear description and tests where applicable
+
+**License**
+This project is provided under the ISC License.
+
+**Contact**
+If you need help or want to contribute, open an issue or contact the maintainer listed in the repository metadata.

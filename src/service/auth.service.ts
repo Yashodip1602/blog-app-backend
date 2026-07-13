@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import User from '../models/user.model';
 import Role from '../models/role.model';
 import { hashPassword, comparePassword } from '../utils/hashPassword';
+import { getSignedUrl } from '../utils/upload';
 
 export interface ServiceResponse {
   statusCode: number;
@@ -12,6 +13,38 @@ export interface ServiceResponse {
   error?: string;
   role?: string;
 }
+
+const serializeUserForResponse = async (user: User): Promise<any> => {
+  const plainUser = user.toJSON();
+  const photoKey = plainUser.profile_photo_url || null;
+  const expiresInSeconds = parseInt(process.env.S3_PRESIGNED_URL_TTL_SECONDS || '3600', 10);
+
+  if (photoKey) {
+    try {
+      const signedUrl = await getSignedUrl(photoKey, expiresInSeconds);
+      return {
+        ...plainUser,
+        profile_photo_key: photoKey,
+        profile_photo_url: signedUrl,
+        profile_photo_url_expires_in: expiresInSeconds > 0 ? expiresInSeconds : null,
+      };
+    } catch (error) {
+      return {
+        ...plainUser,
+        profile_photo_key: photoKey,
+        profile_photo_url: null,
+        profile_photo_url_expires_in: expiresInSeconds > 0 ? expiresInSeconds : null,
+      };
+    }
+  }
+
+  return {
+    ...plainUser,
+    profile_photo_key: photoKey,
+    profile_photo_url: null,
+    profile_photo_url_expires_in: null,
+  };
+};
 
 export const registerUser = async (data: any): Promise<ServiceResponse> => {
   const { full_name, phone_no, email, password, profile_photo_url } = data;
@@ -53,7 +86,7 @@ export const registerUser = async (data: any): Promise<ServiceResponse> => {
     statusCode: 201,
     success: true,
     message: 'User registered successfully',
-    data: newUser,
+    data: await serializeUserForResponse(newUser),
     role: role?.role,
   };
 };
@@ -81,7 +114,7 @@ export const loginUser = async (data: any): Promise<Omit<ServiceResponse, 'token
     statusCode: 200,
     success: true,
     message: 'Login successful',
-    user: user,
+    user: await serializeUserForResponse(user),
     role: role?.role,
   };
 };
@@ -92,7 +125,7 @@ export const getUserProfile = async (id: string): Promise<ServiceResponse> => {
     return { statusCode: 404, success: false, message: 'User not found' };
   }
 
-  return { statusCode: 200, success: true, data: user };
+  return { statusCode: 200, success: true, data: await serializeUserForResponse(user) };
 };
 
 export const updateUserProfile = async (id: string, data: any): Promise<ServiceResponse> => {
@@ -124,7 +157,7 @@ export const updateUserProfile = async (id: string, data: any): Promise<ServiceR
   if (full_name) updates.full_name = full_name;
   if (phone_no) updates.phone_no = phone_no;
   if (email) updates.email = email;
-  if (profile_photo_url) updates.profile_photo_url = profile_photo_url;
+  if (profile_photo_url !== undefined) updates.profile_photo_url = profile_photo_url;
   if (password) updates.password = await hashPassword(password);
 
   await user.update(updates);
@@ -133,6 +166,6 @@ export const updateUserProfile = async (id: string, data: any): Promise<ServiceR
     statusCode: 200,
     success: true,
     message: 'Profile updated successfully',
-    data: user,
+    data: await serializeUserForResponse(user),
   };
 };
