@@ -7,7 +7,7 @@ import fastifyMultipart from '@fastify/multipart';
 import config from './config';
 import sequelize from './config/database';
 import path from 'path';
-import { testUploadConnection } from './utils/upload';
+// import { testUploadConnection } from './utils/upload';
 import { seedRoles } from './service/role-seed.service';
 
 // ─── Plugins ─────────────────────────────────────────────────────────────────
@@ -15,6 +15,7 @@ import { seedRoles } from './service/role-seed.service';
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 import authRoutes from './routes/auth.routes';
+// import uploadRoutes from './routes/upload.routes';
 // import userRoutes from './routes/users/user.routes';
 // import postRoutes from './routes/posts/post.routes';
 // import commentRoutes from './routes/posts/comment.routes';
@@ -121,6 +122,7 @@ async function buildApp(): Promise<FastifyInstance> {
   // ─────────────────────────────────────────────────────────────────────────
 
   await app.register(authRoutes, { prefix: '/api/auth' });
+  // await app.register(uploadRoutes, { prefix: '/api/uploads' });
   // await app.register(userRoutes, { prefix: '/api/users' });
   // await app.register(postRoutes, { prefix: '/api/posts' });
   // await app.register(commentRoutes, { prefix: '/api/posts' }); // /:postId/comments
@@ -194,7 +196,7 @@ async function start(): Promise<void> {
   }
 
   // 3. Verify upload provider connection
-  await testUploadConnection();
+  // await testUploadConnection();
 
   // 4. Build and start Fastify
   const app = await buildApp();
